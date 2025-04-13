@@ -1,12 +1,28 @@
+using AssetsSystem;
+using AssetsSystem.Assets.Scripts.Core;
+using Core;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
+using UnityMVVM.ViewManager;
 
 namespace Startup
 {
     public class StartupService : IStartupService
     {
-        public UniTask Startup()
+        private readonly IAssetsModel _assetsModel;
+        private readonly IViewManager _viewManager;
+
+        public StartupService(
+            IAssetsModel assetsModel,
+            IViewManager viewManager) {
+            _assetsModel = assetsModel;
+            _viewManager = viewManager;
+        }
+
+        public async UniTask Startup()
         {
-            return UniTask.CompletedTask;
+            await _assetsModel.CacheAsset<GameObject>(ViewNames.PuzzleMenuView);
+            await _viewManager.Open(LayerNames.Screen, ViewNames.PuzzleMenuView);
         }
     }
 }
